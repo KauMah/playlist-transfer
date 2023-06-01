@@ -1,20 +1,25 @@
-import { type NextPage } from "next";
-import { signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { type NextPage } from 'next';
+import { signOut, useSession } from 'next-auth/react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import SpotifyPlaylists from '~/components/SpotifyPlaylists';
+import { api } from '~/utils/api';
 
 const Manager: NextPage = () => {
   const { data } = useSession();
   const router = useRouter();
+  const tokens = api.spotify.spotifyToken.useQuery().data;
+  const auth_header = api.spotify.refreshToken.useQuery().data;
   useEffect(() => {
     if (!data || !data.user || !data.user.id) {
       router
-        .push("/")
-        .then(() => console.log("Need auth"))
+        .push('/')
+        .then(() => console.log('Need auth'))
         .catch((e: unknown) => console.error(e));
     }
   }, [data, router]);
+
   return (
     <>
       <Head>
@@ -33,6 +38,18 @@ const Manager: NextPage = () => {
               Sign out
             </button>
           </div>
+        </div>
+        <div className="h-200 mx-5 text-center">
+          {!!tokens &&
+          tokens.access_token &&
+          tokens.refresh_token &&
+          auth_header ? (
+            <SpotifyPlaylists
+              access_token={tokens.access_token}
+              refresh_token={tokens.refresh_token}
+              auth_header={auth_header}
+            />
+          ) : null}
         </div>
       </main>
     </>
