@@ -13,10 +13,7 @@ const Manager: NextPage = () => {
   const auth_header = api.spotify.refreshToken.useQuery().data;
   useEffect(() => {
     if (!data || !data.user || !data.user.id) {
-      router
-        .push('/')
-        .then(() => console.log('Need auth'))
-        .catch((e: unknown) => console.error(e));
+      router.push('/').catch((e: unknown) => console.error(e));
     }
   }, [data, router]);
 
@@ -33,7 +30,13 @@ const Manager: NextPage = () => {
           <div className="flex w-full flex-row-reverse border-red-400">
             <button
               className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-              onClick={() => void signOut()}
+              onClick={() => {
+                signOut()
+                  .then(() => {
+                    router.push('/').catch((e: unknown) => console.error(e));
+                  })
+                  .catch((err) => console.error(err));
+              }}
             >
               Sign out
             </button>

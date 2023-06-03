@@ -7,8 +7,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 const Home: NextPage = () => {
-  //   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>
